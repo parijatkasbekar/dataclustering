@@ -2,3 +2,4 @@ matplotlib
 dash-ag-grid
 dash-bootstrap-components
 pandas
+flask
