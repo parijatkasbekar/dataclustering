@@ -91,4 +91,4 @@ def plot_data(selected_yaxis):
 
 
 if __name__ == '__main__':
-    app.run_server(debug=False, port=8002)
+    app.run_server(debug=False, port=8002, host='0.0.0.0')
