@@ -16,7 +16,8 @@ spec:
     spec:
       containers:
       - name: capstone
-        image: parijatkasbekar/capstonedataclustering:v0.0.2
+        imagePullPolicy: Always
+        image: parijatkasbekar/capstonedataclustering:latest
         ports:
         - containerPort: 8002 
 
