@@ -14,7 +14,7 @@ df = pd.read_csv("1000_Sales_Records.csv")
 
 app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 app.layout = dbc.Container([
-    html.H1("Sales Data Insights", className='mb-2', style={'textAlign':'center'}),
+    html.H1("Sales Data Insights - Demo", className='mb-2', style={'textAlign':'center'}),
 
     dbc.Row([
         dbc.Col([
