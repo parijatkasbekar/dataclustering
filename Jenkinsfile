@@ -1,50 +1,72 @@
 pipeline {
     agent any
-
     environment {
-        // Define environment variables for your project
-        DOCKER_IMAGE_NAME = 'parijatkasbekar/capstonedataclustering'
-        REPO_URL = 'https://github.com/parijatkasbekar/dataclustering.git'
-        DIRECTORY_NAME = 'dataclustering'
+        // Define environment variables here
+        DOCKER_IMAGE = 'parijatkasbekar/capstonedataclustering'
+        DOCKER_TAG = 'latest'
     }
-
     stages {
- 
-         stage('Clone the repo') {
+        stage('Checkout') {
             steps {
-                script {
-                    // Build a Docker image and tag it
-                    sh "rm -rf dataclustering && git clone ${REPO_URL}"
+                // Check out from version control
+                git 'https://github.com/parijatkasbekar/dataclustering.git'
+            }
+        }
+        stage('Setup Python Environment') {
+            steps {
+                // Setup a virtual environment and install dependencies
+                sh 'python -m venv venv'
+                sh '. venv/bin/activate'
+                sh 'pip install -r requirements.txt'
+            }
+        }
+        stage('Run Unit Tests') {
+            steps {
+                // Run pytest and generate a JUnit report
+                sh 'pytest test_app.py --junitxml=report.xml'
+            }
+            post {
+                always {
+                    // Archive the test reports
+                    junit 'report.xml'
+                }
+                failure {
+                    // If tests fail, send email
+                    mail to: 'parthmadaan2002@gmail.com','palak.sahu20@st.niituniversity.in','akshat.dixit20@st.niituniversity.in','parijat.kasbekar20@st.niituniversity.in',
+                         subject: "Failed Unit Tests in ${env.JOB_NAME} [${env.BUILD_NUMBER}]",
+                         body: "It appears that unit tests have failed. Please check Jenkins for more details."
                 }
             }
-        }       
-
+        }
         stage('Build Docker Image') {
             steps {
-                script {
-                    // Build a Docker image and tag it
-                    sh "cd dataclustering && docker build . -t ${DOCKER_IMAGE_NAME}:${BUILD_NUMBER}"
+                // Build Docker image
+                sh 'docker build -t $DOCKER_IMAGE:$DOCKER_TAG .'
+            }
+            post {
+                failure {
+                    // If Docker build fails, send email
+                    mail to: 'parthmadaan2002@gmail.com','palak.sahu20@st.niituniversity.in','akshat.dixit20@st.niituniversity.in','parijat.kasbekar20@st.niituniversity.in',
+                         subject: "Docker Image Build Failure in ${env.JOB_NAME} [${env.BUILD_NUMBER}]",
+                         body: "There was a failure building the Docker image. Please check Jenkins for more details."
                 }
             }
         }
-
-        stage('Push to Docker Hub') {
+        stage('Deploy') {
             steps {
-                script {
-                    // Push the Docker image to Docker Hub
-                    sh "docker --config ~/.docker login && docker push ${DOCKER_IMAGE_NAME}:${BUILD_NUMBER}"
-                }
+                // Add steps to deploy your application
+                echo 'Deploying Application...'
+                // For example, pushing the Docker image to a registry could be a deployment step
+                sh 'docker push $DOCKER_IMAGE:$DOCKER_TAG'
             }
         }
-
-        stage('Deploy to Kubernetes') {
-            steps {
-                script {
-                    // Deploy to Kubernetes using kubeconfig from Jenkins user's home directory
-                    sh "sed -i 's/BUILD_NUMBER_PLACEHOLDER/${BUILD_NUMBER}/g' dataclustering/deployment/capstone.yaml"
-                    sh 'kubectl apply -f dataclustering/deployment/capstone.yaml'
-                }
-            }
+    }
+    post {
+        failure {
+            // General notification for any kind of failure in the pipeline
+            mail to: 'parthmadaan2002@gmail.com','palak.sahu20@st.niituniversity.in','akshat.dixit20@st.niituniversity.in','parijat.kasbekar20@st.niituniversity.in',
+                 subject: "Build Failure in ${env.JOB_NAME} [${env.BUILD_NUMBER}]",
+                 body: "The build has failed. Please check Jenkins for more details."
         }
     }
 }
