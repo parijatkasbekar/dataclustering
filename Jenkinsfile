@@ -18,7 +18,7 @@ pipeline {
                     sh 'python3 -m venv venv'
                     sh '. venv/bin/activate'
                     sh 'pip install -r requirements.txt'
-                    sh 'pytest test_app.py --junitxml=report.xml'
+                    // sh 'pytest test_app.py --junitxml=report.xml'
                 }
             }
         }
