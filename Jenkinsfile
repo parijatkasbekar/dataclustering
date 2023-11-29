@@ -49,14 +49,23 @@ to: '$DEFAULT_RECIPIENTS'
                 sh 'docker build -t $DOCKER_IMAGE:$DOCKER_TAG .'
             }
             post {
-                failure {
-                    // If Docker build fails, send email
-                    mail to: 'parthmadaan2002@gmail.com','palak.sahu20@st.niituniversity.in','akshat.dixit20@st.niituniversity.in','parijat.kasbekar20@st.niituniversity.in',
-                         subject: "Docker Image Build Failure in ${env.JOB_NAME} [${env.BUILD_NUMBER}]",
-                         body: "There was a failure building the Docker image. Please check Jenkins for more details."
-                }
-            }
-        }
+changed {
+script {
+if (currentBuild.currentResult == 'FAILURE') {
+emailext subject: '$DEFAULT_SUBJECT',
+body: '$DEFAULT_CONTENT',
+recipientProviders: [
+[$class: 'CulpritsRecipientProvider'],
+[$class: 'DevelopersRecipientProvider'],
+[$class: 'RequesterRecipientProvider']
+],
+replyTo: '$DEFAULT_REPLYTO',
+to: '$DEFAULT_RECIPIENTS'
+}
+}
+}
+}
+}
         stage('Deploy') {
             steps {
                 // Add steps to deploy your application
