@@ -15,23 +15,13 @@ pipeline {
                 script {
                     // Build a Docker image and tag it
                     sh "rm -rf dataclustering && git clone ${REPO_URL}"
+                    sh 'python -m venv venv'
+                    sh '. venv/bin/activate'
+                    sh 'pip install -r requirements.txt'
+                    sh 'pytest test_app.py --junitxml=report.xml'
                 }
             }
         } 
-        stage('Setup Python Environment') {
-            steps {
-                // Setup a virtual environment and install dependencies
-                sh 'python -m venv venv'
-                sh '. venv/bin/activate'
-                sh 'pip install -r requirements.txt'
-            }
-        }
-        stage('Run Unit Tests') {
-            steps {
-                // Run pytest and generate a JUnit report
-                sh 'pytest test_app.py --junitxml=report.xml'
-            }
-
         stage('Build Docker Image') {
             steps {
                 script {
@@ -74,7 +64,6 @@ recipientProviders: [
 ],
 replyTo: '$DEFAULT_REPLYTO',
 to: '$DEFAULT_RECIPIENTS'
-}
 }
 }
 }
