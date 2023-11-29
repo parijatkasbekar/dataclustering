@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 import base64
 from io import BytesIO
 
-df = pd.read_csv("1000_Sales_Records.csv")
+df = pd.read_csv("1000_Sales_Records.csv") #Data
 
 app = Dash(__name__, external_stylesheets=[dbc.themes.LUX])
 
