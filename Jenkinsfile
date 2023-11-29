@@ -47,7 +47,6 @@ pipeline {
             }
         }
     }
-}
 post {
 changed {
 script {
@@ -65,4 +64,4 @@ to: '$DEFAULT_RECIPIENTS'
 }
 }
 }
-
+}
