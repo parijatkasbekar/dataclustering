@@ -61,15 +61,6 @@ pipeline {
             }
         }
     }
-    post {
-        failure {
-            // General notification for any kind of failure in the pipeline
-            mail to: 'parthmadaan2002@gmail.com','palak.sahu20@st.niituniversity.in','akshat.dixit20@st.niituniversity.in','parijat.kasbekar20@st.niituniversity.in',
-                 subject: "Build Failure in ${env.JOB_NAME} [${env.BUILD_NUMBER}]",
-                 body: "The build has failed. Please check Jenkins for more details."
-        }
-    }
-}
 post {
 changed {
 script {
