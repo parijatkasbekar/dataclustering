@@ -17,7 +17,7 @@ try:
     time.sleep(5)
  
     # Check if a specific element is present on the page
-    element = driver.find_element(By.ID, '_dash-loading')
+    element = driver.find_element(By.ID, '_dash-renderer')
     if element.is_displayed():
         print("Page loaded successfully!")
     else:
