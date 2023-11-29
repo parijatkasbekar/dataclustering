@@ -15,7 +15,7 @@ pipeline {
                 script {
                     // Build a Docker image and tag it
                     sh "rm -rf dataclustering && git clone ${REPO_URL}"
-                    sh 'python -m venv venv'
+                    sh 'python3 -m venv venv'
                     sh '. venv/bin/activate'
                     sh 'pip install -r requirements.txt'
                     sh 'pytest test_app.py --junitxml=report.xml'
