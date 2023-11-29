@@ -1,39 +1,33 @@
-# test_app.py
 import pytest
-import sys
-
-sys.path.append("/path/to/directory/containing/app.py")
-from main import create_app
-import pandas as pd
-
-
+from dash import Dash, dcc, html
+from main import update_graph
+import pandas as pd 
+ 
 @pytest.fixture
-def dash_app(mocker):
-    # Mock the pd.read_csv method
-    mocker.patch(
-        "pandas.read_csv",
-        return_value=pd.DataFrame(
-            {"Country": ["Country1", "Country2"], "Item Type": [10, 20]}
-        ),
-    )
-    # Pass the mock DataFrame to create_app
-    app = create_app(pd.read_csv("1000_Sales_Records.csv"))
-    return app
-
-
-def test_plot_data(dash_app):
-    # Use the dash_app to test the callback
-    # Use the Test Client to simulate callback triggers and test responses
-    with dash_app.server.test_client() as client:
-        response = client.post(
-            "/_dash-update-component",
-            json={
-                "output": "@bar-graph-matplotlib.src",  # Use the correct ID
-                "inputs": [
-                    {"id": "category", "property": "value", "value": "Item Type"}
-                ],
-            },
-        )
-
-        # Assert the callback response
-        assert response.status_code == 200
+def example_data():
+    return {
+        'Country': ['Libya', 'Canada'],
+        'Item Type': ['Cosmetics', 'Vegetables'],
+        'Sales': [3692591.20, 464953.08],
+        # ... other columns
+    }
+ 
+def test_update_graph(example_data, monkeypatch):
+    # Mocking the global data for the test
+    monkeypatch.setattr("main.df", pd.DataFrame(example_data))
+ 
+    # Test if the function returns a valid Plotly figure
+    selected_category = 'Item Type'
+    figure = update_graph(selected_category)
+   
+    assert figure is not None
+    assert 'data' in figure
+    assert 'layout' in figure
+   
+    # You can add more specific tests based on the expected behavior of your function
+    # For example, check if the x-axis, y-axis, or title are set correctly
+    assert figure['layout']['xaxis']['title']['text'] == 'Country'
+    assert figure['layout']['yaxis']['title']['text'] == f"{selected_category} Sales"
+    assert figure['layout']['title']['text'] == f"{selected_category} Sales by Country"
+   
+    # Check if the data points are correctly represented in the plot
