@@ -22,6 +22,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
+                    sh "python -m unittest discover --pattern=test_app.py"
                     // Build a Docker image and tag it
                     sh "cd dataclustering && docker build . -t ${DOCKER_IMAGE_NAME}:${BUILD_NUMBER}"
                 }
