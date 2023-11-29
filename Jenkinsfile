@@ -10,7 +10,7 @@ pipeline {
 
     stages {
  
-         stage('Clone the repo') {
+        stage('Clone the repo') {
             steps {
                 script {
                     // Build a Docker image and tag it
@@ -21,7 +21,17 @@ pipeline {
                     // sh 'pytest test_app.py --junitxml=report.xml'
                 }
             }
+        }   
+
+        stage('Run the unit tests ') {
+            steps {
+                script {
+                    // Runnig the unit tests
+                    sh "cd dataclustering && pytest "
+                }
+            }
         }
+
         stage('Build Docker Image') {
             steps {
                 script {
@@ -50,22 +60,25 @@ pipeline {
                 }
             }
         }
+
+
+        stage('Run selenium tests') {
+            steps {
+                script {
+                    // Execute selenium based testing
+                    sh "cd dataclustering && python3 check_site_liveness.py"
+                }
+            }
+        }
+
+
+        stage('Send notification Email') {
+            steps {
+                script {
+                    // Send notification Email via gmail
+                    
+                    sh 'python3 send_email.py'
+                }
+            }
+        }
     }
-post {
-changed {
-script {
-if (currentBuild.currentResult == 'FAILURE') {
-emailext subject: '$DEFAULT_SUBJECT',
-body: '$DEFAULT_CONTENT',
-recipientProviders: [
-[$class: 'CulpritsRecipientProvider'],
-[$class: 'DevelopersRecipientProvider'],
-[$class: 'RequesterRecipientProvider']
-],
-replyTo: '$DEFAULT_REPLYTO',
-to: '$DEFAULT_RECIPIENTS'
-}
-}
-}
-}
-}
