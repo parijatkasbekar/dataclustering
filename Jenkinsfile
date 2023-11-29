@@ -27,7 +27,7 @@ pipeline {
             steps {
                 script {
                     // Runnig the unit tests
-                    sh "cd dataclustering && python3 /usr/lib/python3/dist-packages/pytest.py "
+                    sh "cd dataclustering && pytest"
                 }
             }
         }
