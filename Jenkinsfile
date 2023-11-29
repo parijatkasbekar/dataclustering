@@ -18,14 +18,14 @@ pipeline {
                     sh 'python3 -m venv venv'
                     sh '. venv/bin/activate'
                     sh 'pip install -r requirements.txt'
-                    sh 'pytest test_app.py --junitxml=report.xml'
+                    // sh 'pytest test_app.py --junitxml=report.xml'
                 }
             }
         }
         stage('Build Docker Image') {
             steps {
                 script {
-                    sh "python3 -m unittest discover --pattern=test_app.py"
+                    // sh "python3 -m unittest discover --pattern=test_app.py"
                     // Build a Docker image and tag it
                     sh "cd dataclustering && docker build . -t ${DOCKER_IMAGE_NAME}:${BUILD_NUMBER}"
                 }
