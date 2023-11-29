@@ -46,7 +46,7 @@ to: '$DEFAULT_RECIPIENTS'
         stage('Build Docker Image') {
             steps {
                 // Build Docker image
-                sh 'docker build -t $DOCKER_IMAGE:$DOCKER_TAG .'
+                sh 'sudo docker build -t $DOCKER_IMAGE:$DOCKER_TAG .'
             }
             post {
 changed {
