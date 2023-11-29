@@ -26,18 +26,23 @@ pipeline {
                 sh 'pytest test_app.py --junitxml=report.xml'
             }
             post {
-                always {
-                    // Archive the test reports
-                    junit 'report.xml'
-                }
-                failure {
-                    // If tests fail, send email
-                    mail to: 'parthmadaan2002@gmail.com','palak.sahu20@st.niituniversity.in','akshat.dixit20@st.niituniversity.in','parijat.kasbekar20@st.niituniversity.in',
-                         subject: "Failed Unit Tests in ${env.JOB_NAME} [${env.BUILD_NUMBER}]",
-                         body: "It appears that unit tests have failed. Please check Jenkins for more details."
-                }
-            }
-        }
+changed {
+script {
+if (currentBuild.currentResult == 'FAILURE') {
+emailext subject: '$DEFAULT_SUBJECT',
+body: '$DEFAULT_CONTENT',
+recipientProviders: [
+[$class: 'CulpritsRecipientProvider'],
+[$class: 'DevelopersRecipientProvider'],
+[$class: 'RequesterRecipientProvider']
+],
+replyTo: '$DEFAULT_REPLYTO',
+to: '$DEFAULT_RECIPIENTS'
+}
+}
+}
+}
+}
         stage('Build Docker Image') {
             steps {
                 // Build Docker image
