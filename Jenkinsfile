@@ -26,7 +26,7 @@ pipeline {
         stage('Run the unit tests ') {
             steps {
                 script {
-                    // Runnig the unit tests
+                    // Running the unit tests
                     sh "cd dataclustering && pytest"
                 }
             }
