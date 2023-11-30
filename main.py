@@ -17,7 +17,7 @@ app = Dash(__name__, external_stylesheets=[dbc.themes.LUX])
 app.layout = html.Div(style={'backgroundColor': '#f8f9fa'},  # Set the background color
     children=[
     dbc.Container([
-#hello hdjd
+#Developed by Debashis 
         html.Script(src='/assets/chatbot.js'),
         html.H1(
         "Sales Data Insights",
